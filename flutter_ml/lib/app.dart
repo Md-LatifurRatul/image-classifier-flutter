@@ -10,7 +10,8 @@ class FlutterMLApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Flutter ML App",
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         useMaterial3: true,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
