@@ -10,10 +10,14 @@ class ImagePickerProvider extends ChangeNotifier {
   final ImagePicker _imagePicker = ImagePicker();
   late final ImageLabelerOptions _labelerOptions;
   late final ImageLabeler _imageLabeler;
+  List<ImageLabel> _labels = [];
+  bool _isProcessing = false;
 
   File? get image => _image;
+  List<ImageLabel> get labels => _labels;
 
   ImageLabeler get imageLabeler => _imageLabeler;
+  bool get isProcessing => _isProcessing;
 
   ImagePickerProvider() {
     _labelerOptions = ImageLabelerOptions(confidenceThreshold: 0.6);
@@ -29,7 +33,7 @@ class ImagePickerProvider extends ChangeNotifier {
       );
       if (selectedImage != null) {
         _image = File(selectedImage.path);
-        performImageLabeling();
+        await performImageLabeling();
         notifyListeners();
       }
     } catch (e) {
@@ -47,7 +51,7 @@ class ImagePickerProvider extends ChangeNotifier {
       );
       if (capturedImage != null) {
         _image = File(capturedImage.path);
-        performImageLabeling();
+        await performImageLabeling();
         notifyListeners();
       }
     } catch (e) {
@@ -58,35 +62,52 @@ class ImagePickerProvider extends ChangeNotifier {
   Future<void> performImageLabeling() async {
     if (_image == null) {
       log('No image selected for labeling. Skipping.');
+      _labels = [];
+      notifyListeners();
       return;
     }
+    _isProcessing = true;
+    notifyListeners();
+
     log('Attempting to perform image labeling...');
 
     try {
       final InputImage inputImage = InputImage.fromFile(_image!);
-      final List<ImageLabel> labels = await _imageLabeler.processImage(
+      final List<ImageLabel> detectedLabels = await _imageLabeler.processImage(
         inputImage,
       );
 
-      if (labels.isEmpty) {
+      _labels = detectedLabels;
+
+      if (_labels.isEmpty) {
         log('No labels detected for the image.');
         return;
       }
 
-      log('Detected Labels:');
-      for (ImageLabel label in labels) {
-        final String text = label.label;
-        final int index = label.index;
-        final double confidence = label.confidence;
-        log("Label: $text, Confidence: ${confidence.toStringAsFixed(2)}");
-      }
+      // for (ImageLabel label in _labels) {
+      //   final String text = label.label;
+      //   final int index = label.index;
+      //   final double confidence = label.confidence;
+      //   log("Label: $text, Confidence: ${confidence.toStringAsFixed(2)}");
+
+      // }
     } catch (e) {
       log('Error during image labeling: $e');
+      _labels = [];
+    } finally {
+      _isProcessing = false;
+      notifyListeners();
     }
   }
 
   void clearImage() {
     _image = null;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _imageLabeler.close();
+    super.dispose();
   }
 }
