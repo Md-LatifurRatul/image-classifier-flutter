@@ -27,6 +27,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: 
   provider: ^6.1.5
+  google_mlkit_image_labeling: 
 
 dev_dependencies:
   flutter_test:
