@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ml/controller/image_picker_provider.dart';
-import 'package:flutter_ml/utils/model_loader.dart';
 import 'package:flutter_ml/widgets/display_image_labels.dart';
 import 'package:flutter_ml/widgets/select_image_card.dart';
 import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
@@ -19,8 +18,6 @@ class _FlutterMlHomeScreenState extends State<FlutterMlHomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    ModelLoader.loadModel();
   }
 
   @override

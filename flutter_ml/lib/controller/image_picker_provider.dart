@@ -2,13 +2,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ml/utils/model_loader.dart';
 import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerProvider extends ChangeNotifier {
   File? _image;
   final ImagePicker _imagePicker = ImagePicker();
-  late final ImageLabelerOptions _labelerOptions;
+  // late final ImageLabelerOptions _labelerOptions;
   late final ImageLabeler _imageLabeler;
   List<ImageLabel> _labels = [];
   bool _isProcessing = false;
@@ -20,8 +21,19 @@ class ImagePickerProvider extends ChangeNotifier {
   bool get isProcessing => _isProcessing;
 
   ImagePickerProvider() {
-    _labelerOptions = ImageLabelerOptions(confidenceThreshold: 0.6);
-    _imageLabeler = ImageLabeler(options: _labelerOptions);
+    loadModel();
+
+    // _labelerOptions = ImageLabelerOptions(confidenceThreshold: 0.6);
+    // _imageLabeler = ImageLabeler(options: _labelerOptions);
+  }
+
+  Future<void> loadModel() async {
+    final modelPath = await ModelLoader.getModelPath('assets/ml/fruits.tflite');
+    final options = LocalLabelerOptions(
+      confidenceThreshold: 0.8,
+      modelPath: modelPath,
+    );
+    _imageLabeler = ImageLabeler(options: options);
   }
 
   Future<void> pickImage() async {
