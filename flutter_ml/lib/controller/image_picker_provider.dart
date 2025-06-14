@@ -28,7 +28,9 @@ class ImagePickerProvider extends ChangeNotifier {
   }
 
   Future<void> loadModel() async {
-    final modelPath = await ModelLoader.getModelPath('assets/ml/fruits.tflite');
+    final modelPath = await ModelLoader.getModelPath(
+      'assets/ml/fruits_model.tflite',
+    );
     final options = LocalLabelerOptions(
       confidenceThreshold: 0.8,
       modelPath: modelPath,
