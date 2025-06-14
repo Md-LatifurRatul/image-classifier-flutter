@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -20,14 +19,5 @@ class ModelLoader {
       );
     }
     return file.path;
-  }
-
-  static Future<void> loadModel() async {
-    final modelPath = await getModelPath('assets/ml/fruits.tflite');
-    final options = LocalLabelerOptions(
-      confidenceThreshold: 0.8,
-      modelPath: modelPath,
-    );
-    final imageLabeler = ImageLabeler(options: options);
   }
 }
