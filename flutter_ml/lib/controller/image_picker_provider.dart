@@ -29,7 +29,7 @@ class ImagePickerProvider extends ChangeNotifier {
 
   Future<void> loadModel() async {
     final modelPath = await ModelLoader.getModelPath(
-      'assets/ml/fruits_model.tflite',
+      'assets/ml/emotion.tflite',
     );
     final options = LocalLabelerOptions(
       confidenceThreshold: 0.8,
